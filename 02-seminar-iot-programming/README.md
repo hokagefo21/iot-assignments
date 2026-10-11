@@ -16,3 +16,12 @@
 | 3.2 | DHT22 → GPIO 4, светодиод → GPIO 2; кликните по DHT22 и поставьте > 30 °C |
 | 3.3 | кнопка GPIO 15 ↔ GND, светодиод → GPIO 2 |
 | 3.4 | DHT22 → GPIO 4; топик `college/kainazar/temp`, проверка через HiveMQ WebSocket Client |
+
+## Готовые проекты
+
+| Задание | Проект |
+|---|---|
+| 3.1 Мигание | https://wokwi.com/projects/477581150199577601 |
+| 3.2 Термометр с вентилятором | https://wokwi.com/projects/477581592785773569 |
+| 3.3 Кнопка-переключатель | https://wokwi.com/projects/477581704298720257 |
+| 3.4 Отправка в MQTT | https://wokwi.com/projects/477581817847989249 |
