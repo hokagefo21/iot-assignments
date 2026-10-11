@@ -1,0 +1,41 @@
+digraph G {
+  rankdir=TB; splines=true; nodesep=0.35; ranksep=0.7;
+  graph [fontname="DejaVu Sans", fontsize=13, bgcolor="white", pad=0.3];
+  node  [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#F4F6FA", color="#5B6B82"];
+  edge  [fontname="DejaVu Sans", fontsize=10, color="#3C4A60"];
+
+  subgraph cluster_sensors { label="Датчики"; style="rounded,dashed"; color="#8A97AA";
+    t  [label="Датчик температуры\nвоздуха, °C"];
+    sm [label="Ёмкостный датчик\nвлажности почвы, %"];
+    l  [label="Датчик\nосвещённости, лк"];
+  }
+
+  ctrl [label="ESP32\n(контроллер)\n\nЛОГИКА:\nIF t > 30 → вентилятор ON\nIF soil < 30 → полив ON\nIF light < 300 → лампа ON\nиначе OFF\n+ защита от отказа датчика", fillcolor="#DCE7F7", color="#1F3A63", penwidth=2];
+
+  subgraph cluster_act { label="Исполнительные устройства"; style="rounded,dashed"; color="#8A97AA";
+    r1 [label="Реле 1"]; fan  [label="Вентилятор"];
+    r2 [label="Реле / MOSFET 2"]; valve [label="Клапан полива\n(насос)"];
+    r3 [label="Реле 3"]; lamp [label="Лампа досветки"];
+  }
+
+  wifi  [label="Wi-Fi роутер", shape=ellipse];
+  cloud [label="MQTT-брокер / облако\n(история, правила,\nуведомления)", fillcolor="#FFF3DC", color="#B07A1E"];
+  app   [label="Приложение / дашборд\nсотрудника", fillcolor="#FFF3DC", color="#B07A1E"];
+
+  t -> ctrl  [label="GPIO (цифр.)"];
+  sm -> ctrl [label="ADC"];
+  l -> ctrl  [label="I²C"];
+
+  ctrl -> r1 [label="GPIO"]; r1 -> fan;
+  ctrl -> r2 [label="GPIO"]; r2 -> valve;
+  ctrl -> r3 [label="GPIO"]; r3 -> lamp;
+
+  ctrl -> wifi [label="телеметрия\n(показания, состояния)", color="#2E7D32", fontcolor="#2E7D32"];
+  wifi -> cloud [color="#2E7D32"];
+  cloud -> app  [label="графики, тревоги", color="#2E7D32", fontcolor="#2E7D32"];
+  app -> cloud  [label="команды\n(ручной режим)", color="#C62828", fontcolor="#C62828", style=dashed];
+  cloud -> wifi [color="#C62828", style=dashed];
+  wifi -> ctrl  [label="команды", color="#C62828", fontcolor="#C62828", style=dashed];
+
+  {rank=same; wifi;}
+}

@@ -1,0 +1,15 @@
+$ POST /api/devices
+{"id":1,"name":"Temperature Sensor #1","type":"temperature","location":"Greenhouse, sector 1","created_at":"2026-10-11T09:52:43.651850"}  [HTTP 201]
+$ POST /api/devices/1/readings (24.5)
+{"saved":true,"reading":{"id":1,"device_id":1,"sensor_type":"temperature","value":24.5,"unit":"C","created_at":"2026-10-11T09:52:43.667213"},"warning":null,"action":null}  [HTTP 201]
+$ POST /api/devices/1/readings (32.1)
+{"saved":true,"reading":{"id":2,"device_id":1,"sensor_type":"temperature","value":32.1,"unit":"C","created_at":"2026-10-11T09:52:43.679906"},"warning":"High temperature","action":"TURN_ON_FAN"}  [HTTP 201]
+$ GET /api/devices/1/readings
+[{"id":2,"device_id":1,"sensor_type":"temperature","value":32.1,"unit":"C","created_at":"2026-10-11T09:52:43.679906"},{"id":1,"device_id":1,"sensor_type":"temperature","value":24.5,"unit":"C","created_at":"2026-10-11T09:52:43.667213"}]  [HTTP 200]
+$ POST invalid
+{"message":"Validation failed","errors":[{"field":"sensor_type","error":"Field required"},{"field":"value","error":"Input should be a valid number"}]}  [HTTP 422]
+$ POST /api/devices/99999/readings
+{"detail":"Device 99999 not found"}  [HTTP 404]
+$ sqlite3 iot.db "SELECT * FROM sensor_readings"
+(1, 1, 'temperature', 24.5, 'C', '2026-10-11 09:52:43.667213')
+(2, 1, 'temperature', 32.1, 'C', '2026-10-11 09:52:43.679906')
